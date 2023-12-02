@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         删除知识星球水印
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  删除知识星球文章水印
 // @author       Mrxn
 // @homepage     https://mrxn.net/
@@ -12,11 +12,13 @@
 // @icon         https://wx.zsxq.com/dweb2/assets/images/favicon_32.ico
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=zsxq.com
 // @grant        none
+// @downloadURL https://update.greasyfork.org/scripts/480190/%E5%88%A0%E9%99%A4%E7%9F%A5%E8%AF%86%E6%98%9F%E7%90%83%E6%B0%B4%E5%8D%B0.user.js
+// @updateURL https://update.greasyfork.org/scripts/480190/%E5%88%A0%E9%99%A4%E7%9F%A5%E8%AF%86%E6%98%9F%E7%90%83%E6%B0%B4%E5%8D%B0.meta.js
 // ==/UserScript==
- 
+
 (function() {
     'use strict';
- 
+
     // Your code here...
     function del_watermarkdel_watermark(){
         //首页
@@ -34,7 +36,7 @@
                 }
             }
         }
- 
+
         // 文章页
         // 获取所有带有.js_watermark类的元素
         var articles_elements = document.querySelectorAll(".js_watermark");
@@ -50,9 +52,9 @@
                 }
             }
         }
- 
+
     }
- 
+
     //details-container 点击展开
     function details_listen() {
         var detailsContainer = document.querySelectorAll('.details-container');
@@ -60,8 +62,8 @@
             //console.log("删除topic水印");
             for (var y = 0; y < detailsContainer.length; y++) {
                 detailsContainer[y].addEventListener('click', function() {
-                    // 在点击div后延迟1秒执行的代码
-                    setTimeout(function() {
+                    // 在点击div后500毫秒检查一次
+                    setInterval(function() {
                         //文章点开 topic-detail-panel
                         var topic_elements = document.getElementsByClassName("topic-detail-panel");
                         if (topic_elements) {
@@ -80,9 +82,39 @@
             }
         }
     }
+    function topic_preview(){
+        var topicpreview = document.querySelectorAll('.topic-preview');
+        if (topicpreview){
+            // 删除 搜索结果页的水印
+            for (var z = 0; z < topicpreview.length; z++) {
+                topicpreview[z].addEventListener('click', function() {
+                    //console.log("删除topicpreview水印");
+                    // 在点击div后500毫秒检查一次
+                    setInterval(function() {
+                        //文章点开 topic-detail-panel
+                        var topic_elements_z = document.getElementsByClassName("topic-detail-panel");
+                        if (topic_elements_z) {
+                            // 循环遍历每个元素
+                            for (var xz = 0; xz < topic_elements_z.length; xz++) {
+                                // 修改元素的样式，删除水印
+                                if (topic_elements_z[xz].style.backgroundImage !== "none !important;") {
+                                    topic_elements_z[xz].style.backgroundImage = "none !important;";
+                                    // 修改元素的样式，以防万一,设置水印大小为0
+                                    topic_elements_z[xz].style.backgroundSize = "0px";
+                                }
+                            }
+                        }
+                    }, 500);
+                });
+            }
+        }else{
+            console.log("nothing");
+        }
+    }
     // 鼠标滚动触发
     window.addEventListener("scroll", function() {
         del_watermarkdel_watermark();
         details_listen();
+        topic_preview();
     });
 })();
